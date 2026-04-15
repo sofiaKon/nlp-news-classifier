@@ -22,6 +22,9 @@ Instead of using a traditional machine learning model, the approach relies on me
 - Gradio (for web interface)
 
 ---
+##  Interface Preview
+
+![Gradio App](interface.png)
 
 ##  Methodology
 

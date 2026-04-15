@@ -1,93 +1,95 @@
 #  News Group Classification using Vectorization
 
-## Project Description
+##  Project Overview
 
-This project implements a simple text classification system using vectorization techniques and cosine similarity.
+This project implements a simple text classification system based on vectorization techniques and cosine similarity.
 
-The model classifies input text into one of three categories:
+The system classifies input text into one of three categories:
 
-- comp.graphics
-- sci.space
-- talk.religion.misc
+- `comp.graphics`
+- `sci.space`
+- `talk.religion.misc`
 
-The classification is based on similarity between the input text and training documents.
+Instead of using a traditional machine learning model, the approach relies on measuring similarity between the input text and training documents.
 
 ---
 
-##  Technologies Used
+##  Technologies
 
 - Python
 - scikit-learn
 - NumPy
+- Gradio (for web interface)
 
 ---
 
 ##  Methodology
 
-The project uses:
+The project compares multiple vectorization approaches:
 
-- **CountVectorizer** – converts text into word frequency vectors
-- **TfidfVectorizer** – reduces importance of common words
-- **Cosine Similarity** – measures similarity between text vectors
+- **CountVectorizer** — converts text into word frequency vectors
+- **TfidfVectorizer** — reduces the impact of common words
+- **TF-IDF + n-grams (1,2)** — includes word combinations
+- **Cosine Similarity** — measures similarity between vectors
 
-The model does not use traditional machine learning training.  
-Instead, it compares the input text with existing documents and selects the most similar one.
-
----
-### 🧪 Q1. Why does similarity sometimes become 0.0000?
-
-When a sentence such as:
-
-"Exploring the mars with a robotic rover."
-
-is entered into the model, the similarity score may become 0.0000 or the category may be incorrectly predicted.
-
-This behavior is directly related to how **CountVectorizer** works.
+This is not a trained classifier — it works by finding the most similar document in the dataset.
 
 ---
 
-### 🔹 How CountVectorizer Works
+##  Efficient Dataset Loading
 
-CountVectorizer converts text into a vector based on word frequency using a fixed vocabulary built from the training data.
+To improve performance, the dataset is loaded only once using a shared module (`dataset.py`).
 
-Each word in the vocabulary becomes a feature (column), and each document is represented as a vector of word counts.
+All models reuse the same data instead of downloading it multiple times.
 
----
+### Benefits:
 
-### 🔹 Reason 1: Vocabulary Mismatch
-
-If the input sentence contains words that do not exist in the training data vocabulary, those words are ignored.
-
-For example:
-
-- "robotic"
-- "rover"
-
-If these words were not present in the training dataset, they will not appear in the vector at all.
-
-As a result, the input vector may contain mostly zeros.
+- Faster startup
+- Cleaner architecture
+- No redundant data loading
 
 ---
 
-### 🔹 Reason 2: No Overlapping Words
+##  Q1. Why does similarity become 0.0000?
 
-Cosine similarity depends on overlapping words between vectors.
+Example input:
 
-If the input text and training documents share no common words:
+```bash
+Exploring the mars with a robotic rover.
+```
 
-- dot product = 0
-- similarity = 0.0000
+###  Reason 1: Vocabulary mismatch
+
+Words like:
+
+- `robotic`
+- `rover`
+
+may not exist in the training dataset.
+
+→ They are ignored → vector becomes mostly zeros.
 
 ---
 
-### 🔹 Reason 3: Stop Words Removal
+###  Reason 2: No overlapping words
 
-When using:
+Cosine similarity depends on shared words.
+
+If no overlap:
+```bash
+dot product = 0 → similarity = 0.0000
+```
+
+---
+
+###  Reason 3: Stop-word removal
+
+Using:
 
 ```python
-CountVectorizer(stop_words='english')
+stop_words='english'
 ```
----
+common words (the, is, and) are removed, reducing overlap further.
 
 ##  Experiments (Q2)
 
@@ -106,8 +108,7 @@ Includes word combinations (e.g., "space mission").
 Increasing dataset size improved performance and stability.
 
 ---
-
-## 📊 Results
+##  Results
 
 - TF-IDF produced more reliable results than CountVectorizer
 - n-grams made the model more strict (lower similarity scores)
@@ -115,7 +116,7 @@ Increasing dataset size improved performance and stability.
 
 ---
 
-## ▶️ How to Run
+##  How to Run
 
 1. Install dependencies:
 

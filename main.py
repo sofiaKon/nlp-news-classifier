@@ -11,16 +11,48 @@ def print_table(
     label_3, score_3,
     label_4, score_4
 ):
-    print("\n" + "=" * 105)
+    print("\n" + "=" * 110)
     print(f"INPUT TEXT: {text}")
-    print("=" * 105)
+    print("=" * 110)
     print(f"{'Model':<40} | {'Category':<25} | {'Similarity':<10}")
-    print("-" * 105)
+    print("-" * 110)
     print(f"{'CountVectorizer (20 samples)':<40} | {label_1:<25} | {score_1:.4f}")
     print(f"{'TfidfVectorizer (20 samples)':<40} | {label_2:<25} | {score_2:.4f}")
     print(f"{'TF-IDF + ngram (20 samples)':<40} | {label_3:<25} | {score_3:.4f}")
     print(f"{'TfidfVectorizer (100 samples)':<40} | {label_4:<25} | {score_4:.4f}")
-    print("=" * 105 + "\n")
+    print("=" * 110)
+
+    scores = [score_1, score_2, score_3, score_4]
+    labels = [label_1, label_2, label_3, label_4]
+    models = [
+        "CountVectorizer (20 samples)",
+        "TfidfVectorizer (20 samples)",
+        "TF-IDF + ngram (20 samples)",
+        "TfidfVectorizer (100 samples)"
+    ]
+
+    best_idx = scores.index(max(scores))
+    worst_idx = scores.index(min(scores))
+
+    print("\nDetailed analysis:")
+    print(
+        f"- Best model: {models[best_idx]} -> {labels[best_idx]} ({scores[best_idx]:.4f})")
+    print(
+        f"- Lowest similarity: {models[worst_idx]} -> {labels[worst_idx]} ({scores[worst_idx]:.4f})")
+
+    if len(set(labels)) == 1:
+        print("- All models predicted the same category.")
+    else:
+        print("- The models predicted different categories.")
+
+    if all(score == 0 for score in scores):
+        print("- No overlapping words were found in the training data.")
+
+    print("- CountVectorizer uses raw word frequency.")
+    print("- TfidfVectorizer reduces the effect of common words.")
+    print("- ngram_range=(1,2) makes matching stricter by considering word pairs.")
+    print("- Using 100 samples improves vocabulary coverage and often increases stability.")
+    print("=" * 110 + "\n")
 
 
 def main():

@@ -1,28 +1,13 @@
-from sklearn.datasets import fetch_20newsgroups
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
-
-CATEGORIES = ['comp.graphics', 'sci.space', 'talk.religion.misc']
+from dataset import make_subset
 
 
 def load_model_1():
     print("Loading Model CountVectorizer...")
 
-    newsgroups = fetch_20newsgroups(
-        subset='train',
-        categories=CATEGORIES,
-        remove=('headers', 'footers', 'quotes')
-    )
-
-    data = []
-    labels = []
-
-    for i in range(len(CATEGORIES)):
-        idxs = np.where(newsgroups.target == i)[0][:20]
-        for idx in idxs:
-            data.append(newsgroups.data[idx])
-            labels.append(CATEGORIES[i])
+    data, labels = make_subset(20)
 
     vectorizer = CountVectorizer(stop_words='english')
     X = vectorizer.fit_transform(data)
